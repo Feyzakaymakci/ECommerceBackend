@@ -1,4 +1,5 @@
 ﻿using ECommerceBackend.Application.Repositories;
+using ECommerceBackend.Domain.Entities.Common;
 using ECommerceBackend.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,26 +11,48 @@ using System.Threading.Tasks;
 
 namespace ECommerceBackend.Persistence.Repositories
 {
-    public class ReadRepository<T> : IReadRepository<T> where T : class
+    public class ReadRepository<T> : IReadRepository<T> where T : BaseEntity
     {
         private readonly ECommerceDbContext _context;
-        public DbSet<T> Table => _context.Set<T>();
+        public ReadRepository(ECommerceDbContext context)
 
-        public IQueryable<T> GetAll()
-            => Table;
-
-        public IQueryable<T> GetWhere(Expression<Func<T, bool>> method)
-            =>Table.Where(method);
-
-
-
-        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> method)
-        =>await  Table.FirstOrDefaultAsync(method);
-
-        public Task<T> GetByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
+        public DbSet<T> Table => _context.Set<T>();
+
+        public IQueryable<T> GetAll(bool tracking = true)
+        {
+            var query = Table.AsQueryable();
+            if (!tracking)
+                query = query.AsNoTracking();
+            return query;
+        }
+
+        public IQueryable<T> GetWhere(Expression<Func<T, bool>> method, bool tracking = true)
+        {
+            var query = Table.Where(method);
+            if (!tracking)
+                query = query.AsNoTracking();
+            return query;
+        }
+
+        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> method, bool tracking = true)
+        {
+            var query = Table.AsQueryable();
+            if (!tracking)
+                query = Table.AsNoTracking();
+            return await query.FirstOrDefaultAsync(method);
+        }
+
+        public async Task<T> GetByIdAsync(string id, bool tracking = true)
+        //=> await Table.FirstOrDefaultAsync(data=>data.Id ==Guid.Parse(id));
+        {
+            var query=Table.AsQueryable();
+            if(!tracking)
+                query=Table.AsNoTracking();
+            return await query.FirstOrDefaultAsync(data => data.Id == Guid.Parse(id));  //IQueryable da çalışırken FindAsync bulamazsam Marker Pattern üzerinden Id ye erişebilirsin yukarıdaki gibi.
+        }
     }
 }

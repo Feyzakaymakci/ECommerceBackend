@@ -1,4 +1,5 @@
 ﻿using ECommerceBackend.Domain.Entities;
+using ECommerceBackend.Domain.Entities.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,13 @@ namespace ECommerceBackend.Persistence.Contexts
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Customer> Customer { get; set; }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            ChangeTracker.Entries<BaseEntity>();
+            return base.SaveChangesAsync(cancellationToken);
+        } 
+        //Repository gidip bak hangi savechanges olduğuna.
 
     }
 }
