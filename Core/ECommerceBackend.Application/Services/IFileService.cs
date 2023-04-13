@@ -10,7 +10,6 @@ namespace ECommerceBackend.Application.Services
     public interface IFileService
     {
         Task<List<(string fileName, string path)>> UploadAsync(string path, IFormFileCollection files); //Yükle
-        Task<string> FileRenameAsync(string fileName); //Adlandır
         Task<bool> CopyFileAsync(string path, IFormFile file); //Kaydet
 
     }
