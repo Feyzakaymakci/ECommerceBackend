@@ -1,5 +1,4 @@
 ﻿using ECommerceBackend.Application.Repositories;
-using ECommerceBackend.Application.Services;
 using ECommerceBackend.Persistence.Contexts;
 using ECommerceBackend.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
