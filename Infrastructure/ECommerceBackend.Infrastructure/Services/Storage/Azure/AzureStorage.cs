@@ -19,19 +19,23 @@ namespace ECommerceBackend.Infrastructure.Services.Storage.Azure
         {
             _blobServiceClient = new (configuration["Storage:Azure"]); //appsetting.json daki connection stringi burada belirtiyoruz.
         }
-        public Task DeleteAsync(string containerName, string fileName)
+        public async Task DeleteAsync(string containerName, string fileName)
         {
-            throw new NotImplementedException();
+            _blobContainerClient=_blobServiceClient.GetBlobContainerClient(containerName);
+            BlobClient blobClient = _blobContainerClient.GetBlobClient(fileName);
+            await blobClient.DeleteAsync();
         }
 
         public List<string> GetFiles(string containerName)
         {
-            throw new NotImplementedException();
+            _blobContainerClient = _blobServiceClient.GetBlobContainerClient(containerName);
+            return _blobContainerClient.GetBlobs().Select(b=>b.Name).ToList();
         }
 
         public bool HasFile(string containerName, string fileName)
         {
-            throw new NotImplementedException();
+            _blobContainerClient = _blobServiceClient.GetBlobContainerClient(containerName);
+            return _blobContainerClient.GetBlobs().Any(b => b.Name == fileName);
         }
 
         public async Task<List<(string fileName, string pathOrContainerName)>> UploadAsync(string containerName, IFormFileCollection files)
