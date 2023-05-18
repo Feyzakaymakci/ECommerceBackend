@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerceBackend.Application.ViewModels.Products
+namespace ECommerceBackend.Application.Features.Commands.CreateProduct
 {
-    public class VM_Create_Product
+    public class CreateProductCommandResponse
     {
     }
 }

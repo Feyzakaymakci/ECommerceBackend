@@ -20,7 +20,7 @@ namespace ECommerceBackend.Application.Features.Queries.GetAllProduct
         public async Task<GetAllProductQueryResponse> Handle(GetAllProductQueryRequest request, CancellationToken cancellationToken)  //Burada demek istediği bu handler sınıfı gelen request nesnesine karşılık bir tane response nesnesi döndürecek.
         {
             var totalCount = _productReadRepository.GetAll(false).Count();
-            var products = _productReadRepository.GetAll(false).Skip(request.Pagination.Page * request.Pagination.Size).Take(request.Pagination.Size).Select(p => new
+            var products = _productReadRepository.GetAll(false).Skip(request.Page * request.Size).Take(request.Size).Select(p => new
             {
                 p.Id,
                 p.Name,
