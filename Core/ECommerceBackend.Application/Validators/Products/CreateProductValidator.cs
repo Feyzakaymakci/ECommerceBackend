@@ -1,4 +1,4 @@
-﻿using ECommerceBackend.Application.Features.Commands.CreateProduct;
+﻿using ECommerceBackend.Application.Features.Commands.Product.CreateProduct;
 using ECommerceBackend.Application.ViewModels.Products;
 using FluentValidation;
 

@@ -1,4 +1,5 @@
-﻿using ECommerceBackend.Application.Repositories;
+﻿using ECommerceBackend.Application.Features.Queries.Product.GetAllProduct;
+using ECommerceBackend.Application.Repositories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerceBackend.Application.Features.Queries.GetAllProduct
+namespace ECommerceBackend.Application.Features.Queries.Product.GetAllProduct
 {
     public class GetAllProductQueryHandler : IRequestHandler<GetAllProductQueryRequest, GetAllProductQueryResponse>
     {
