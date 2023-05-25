@@ -24,10 +24,10 @@ namespace ECommerceBackend.API.Controllers
             return Ok(response);
         }
 
-    [HttpPost("[action]")]
-    public async Task<IActionResult>Login(LoginUserCommandRequest loginUserCommandRequest)
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Login(LoginUserCommandRequest loginUserCommandRequest)
         {
-            LoginUserCommandResponse response = await _mediator.Send (loginUserCommandRequest);  //mediator üzerinde ilgili handle tetikleniyor.
+            LoginUserCommandResponse response = await _mediator.Send(loginUserCommandRequest);  //mediator üzerinde ilgili handle tetikleniyor.
             return Ok(response);
         }
     }

@@ -11,6 +11,7 @@ using ECommerceBackend.Application.Repositories;
 using ECommerceBackend.Application.ViewModels.Products;
 using ECommerceBackend.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -19,6 +20,7 @@ namespace ECommerceBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Admin")]
     public class ProductsController : ControllerBase
     {
 

@@ -1,4 +1,6 @@
-﻿using ECommerceBackend.Application.Exceptions;
+﻿using ECommerceBackend.Application.Abstractions.Token;
+using ECommerceBackend.Application.DTOs;
+using ECommerceBackend.Application.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -14,11 +16,16 @@ namespace ECommerceBackend.Application.Features.Commands.AppUser.LoginUser
 
         readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
         readonly SignInManager<Domain.Entities.Identity.AppUser> _signInManager;
+        readonly ITokenHandler _tokenHandler;
 
-        public LoginUserCommandHandler(UserManager<Domain.Entities.Identity.AppUser> userManager, SignInManager<Domain.Entities.Identity.AppUser> signInManager)
+        public LoginUserCommandHandler(
+            UserManager<Domain.Entities.Identity.AppUser> userManager,
+            SignInManager<Domain.Entities.Identity.AppUser> signInManager,
+            ITokenHandler tokenHandler)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _tokenHandler = tokenHandler;
         }
 
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
@@ -28,14 +35,21 @@ namespace ECommerceBackend.Application.Features.Commands.AppUser.LoginUser
                 user = await _userManager.FindByEmailAsync(request.UsernameOrEmail);
 
             if (user == null)
-                throw new NotFoundUserException("Incorrect username or password.");
-
+                throw new NotFoundUserException();
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-            if (result.Succeeded) 
+            if (result.Succeeded)
             {
+                Token token = _tokenHandler.CreateAccessToken(5);
+                return new LoginUserSuccessCommandResponse()
+                {
+                    Token = token
+                };
             }
-
-            return new();
+            //return new LoginUserErrorCommandResponse()
+            //{
+            //    Message = "Kullanıcı adı veya şifre hatalı..."
+            //};
+            throw new AuthenticationErrorException();
         }
     }
 }
