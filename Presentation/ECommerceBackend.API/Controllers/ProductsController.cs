@@ -7,9 +7,6 @@ using ECommerceBackend.Application.Features.Commands.ProductImageFile.UploadProd
 using ECommerceBackend.Application.Features.Queries.Product.GetAllProduct;
 using ECommerceBackend.Application.Features.Queries.Product.GetByIdProduct;
 using ECommerceBackend.Application.Features.Queries.ProductImageFile.GetProductImages;
-using ECommerceBackend.Application.Repositories;
-using ECommerceBackend.Application.ViewModels.Products;
-using ECommerceBackend.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
