@@ -27,17 +27,17 @@ namespace ECommerceBackend.Application.Features.Commands.AppUser.GoogleLogin
         {
             var settings = new GoogleJsonWebSignature.ValidationSettings()
             {
-                Audience = new List<string> { "68973280934-plkok7mrca4nquu45p759ravh4qr1vcm.apps.googleusercontent.com" }
+                Audience = new List<string> { "68973280934-plkok7mrca4nquu45p759ravh4qr1vcm.apps.googleusercontent.com" } //Google Cloud da hangi proje üzerinden doğrulama yapacağımızı burada bildiriyoruz. 
             };
 
-            var payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken, settings);
-            var info = new UserLoginInfo(request.Provider, payload.Subject, request.Provider);
+            var payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken, settings); //Kullanıcıdan gelen IdToken ı doğrula
+            var info = new UserLoginInfo(request.Provider, payload.Subject, request.Provider); //Dış kaynaktan gelen kullanıcı bilgilerini AspNetUserLogins tablosuna kaydetmemizi sağlayacak bir nesne.Yani eğer daha önceden kayıtlı değilse kaydını tutmak için oluşturduk.
             Domain.Entities.Identity.AppUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-            bool result = user != null;
-            if (user == null)
+            bool result = user != null; //Eğer user null değilse true ver.
+            if (user == null) //Eğer null sa yeni bir kullanıcı oluştur
             {
-                user = await _userManager.FindByEmailAsync(payload.Email);
-                if (user == null)
+                user = await _userManager.FindByEmailAsync(payload.Email); 
+                if (user == null) 
                 {
                     user = new()
                     {
