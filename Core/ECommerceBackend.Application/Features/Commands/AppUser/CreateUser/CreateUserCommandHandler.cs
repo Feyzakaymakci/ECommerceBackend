@@ -1,4 +1,6 @@
-﻿using ECommerceBackend.Application.Exceptions;
+﻿using ECommerceBackend.Application.Abstractions.Services;
+using ECommerceBackend.Application.DTOs.User;
+using ECommerceBackend.Application.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -7,34 +9,29 @@ namespace ECommerceBackend.Application.Features.Commands.AppUser.CreateUser
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
     {
-        readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
-        public CreateUserCommandHandler(UserManager<Domain.Entities.Identity.AppUser> userManager)
+        readonly IUserService _userService;
+        public CreateUserCommandHandler(IUserService userService)
         {
-            _userManager = userManager;
+            _userService = userService;
         }
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-            IdentityResult result = await _userManager.CreateAsync(new()
+            CreateUserResponse response = await _userService.CreateAsync(new()
             {
-                Id = Guid.NewGuid().ToString(),
-                UserName = request.UserName,
                 Email = request.Email,
-                FullName = request.FullName
-            }, request.Password);
+                NameSurname = request.FullName,
+                Password = request.Password,
+                PasswordConfirm = request.ConfirmPassword,
+                Username = request.Username,
+            });
 
-            CreateUserCommandResponse response = new() { Succeeded = result.Succeeded };
-
-            if (result.Succeeded)
-
-                response.Message = "User successfully created.";
-            else
-                foreach (var error in result.Errors)
-                    response.Message += $"{error.Code} - {error.Description}\n";
-
-            return response;
-
-            //throw new UserCreateFailedException();
+            return new()
+            {
+                Message = response.Message,
+                Succeeded = response.Succeeded,
+            };
+           
         }
     }
 }

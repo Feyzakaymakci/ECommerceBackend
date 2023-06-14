@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerceBackend.Application.Exceptions
 {
-    internal class AuthenticationErrorException : Exception
+    public class AuthenticationErrorException : Exception
     {
         public AuthenticationErrorException() : base("Authentication error!")
         {
