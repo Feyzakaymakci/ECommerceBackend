@@ -10,6 +10,6 @@ namespace ECommerceBackend.Application.DTOs
     {
         public string AccessToken { get; set; }
         public DateTime Expiration { get; set; } //Geçerlilik süresi
-
+        public string RefreshToken { get; set; }
     }
 }
