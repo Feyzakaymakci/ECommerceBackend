@@ -14,7 +14,7 @@ namespace ECommerceBackend.API.Extensions
                 builder.Run(async context =>
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    context.Response.ContentType = MediaTypeNames.Application.Json;
+                    context.Response.ContentType = MediaTypeNames.Application.Json; //Hangi türde istiyorsak
 
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();  //Hatayla ilgili lazım olan tüm bilgileri getirecek.
                     if(contextFeature != null)

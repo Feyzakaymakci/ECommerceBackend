@@ -26,7 +26,7 @@ namespace ECommerceBackend.Application.Features.Queries.Product.GetAllProduct
         public async Task<GetAllProductQueryResponse> Handle(GetAllProductQueryRequest request, CancellationToken cancellationToken)  //Burada demek istediği bu handler sınıfı gelen request nesnesine karşılık bir tane response nesnesi döndürecek.
         {
             _logger.LogInformation("Get all products");
-            throw new Exception("Hata alındı.");
+     
             var totalCount = _productReadRepository.GetAll(false).Count();
             var products = _productReadRepository.GetAll(false).Skip(request.Page * request.Size).Take(request.Size).Select(p => new
             {

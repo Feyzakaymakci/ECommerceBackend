@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECommerceBackend.Persistenc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECommerceBackend.API", "Presentation\ECommerceBackend.API\ECommerceBackend.API.csproj", "{76BE46B7-D0F8-4E9F-A025-77EAED6BB06D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECommerceBackend.SignalR", "Infrastructure\ECommerceBackend.SignalR\ECommerceBackend.SignalR.csproj", "{A51641CA-18E7-4B81-B5E1-B7A410A61D32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{76BE46B7-D0F8-4E9F-A025-77EAED6BB06D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76BE46B7-D0F8-4E9F-A025-77EAED6BB06D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76BE46B7-D0F8-4E9F-A025-77EAED6BB06D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A51641CA-18E7-4B81-B5E1-B7A410A61D32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A51641CA-18E7-4B81-B5E1-B7A410A61D32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A51641CA-18E7-4B81-B5E1-B7A410A61D32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A51641CA-18E7-4B81-B5E1-B7A410A61D32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +61,7 @@ Global
 		{54C9097A-3778-4835-9197-8E08D56BF66F} = {251D9B5F-2FC9-4845-99A1-039BBFA48063}
 		{66AB0E12-8D21-4BB7-8BC0-7AF18DE45BDD} = {251D9B5F-2FC9-4845-99A1-039BBFA48063}
 		{76BE46B7-D0F8-4E9F-A025-77EAED6BB06D} = {E102882C-CF81-4C53-83A1-14ECED2F6B6D}
+		{A51641CA-18E7-4B81-B5E1-B7A410A61D32} = {251D9B5F-2FC9-4845-99A1-039BBFA48063}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F6651DC8-65D3-492F-9600-008C062283E5}
