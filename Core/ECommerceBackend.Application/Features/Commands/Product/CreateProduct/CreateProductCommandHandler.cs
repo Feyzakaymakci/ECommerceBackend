@@ -15,7 +15,6 @@ namespace ECommerceBackend.Application.Features.Commands.Product.CreateProduct
         readonly IProductWriteRepository _productWriteRepository;
         readonly IProductHubService _productHubService;
 
-
         public CreateProductCommandHandler(IProductWriteRepository productWriteRepository, IProductHubService productHubService)
         {
             _productWriteRepository = productWriteRepository;
