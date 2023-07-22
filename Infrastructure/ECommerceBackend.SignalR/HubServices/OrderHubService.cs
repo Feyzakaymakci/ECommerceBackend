@@ -1,4 +1,6 @@
 ﻿using ECommerceBackend.Application.Abstractions.Hubs;
+using ECommerceBackend.SignalR.Hubs;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +11,14 @@ namespace ECommerceBackend.SignalR.HubServices
 {
     public class OrderHubService : IOrderHubService
     {
-        public Task OrderAddedMessageAsync(string message)
+        readonly IHubContext<OrderHub> _hubContext;
+
+        public OrderHubService(IHubContext<OrderHub> hubContext)
         {
-            throw new NotImplementedException();
+            _hubContext = hubContext;
         }
+
+        public async Task OrderAddedMessageAsync(string message)
+            => await _hubContext.Clients.All.SendAsync(ReceiveFunctionNames.OrderAddedMessage, message);
     }
 }

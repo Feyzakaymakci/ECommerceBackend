@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace ECommerceBackend.Application.DTOs.Order
 {
-    public class CreateOrder
+    public class ListOrder
     {
-        public string? BasketId { get; set; }
-        public string Address { get; set; }
-        public string Description { get; set; }
+        public int TotalOrderCount { get; set; }
+        public object Orders { get; set; }
     }
 }

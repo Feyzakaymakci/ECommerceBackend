@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerceBackend.Application.Repositories
 {
-    public interface IFileReadRepository : IReadRepository<ECommerceBackend.Domain.Entities.File>
+    public interface IFileReadRepository : IReadRepository<Domain.Entities.File>
     {
     }
 }

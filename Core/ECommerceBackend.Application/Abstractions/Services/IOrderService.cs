@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ECommerceBackend.Application.DTOs.Order;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,7 @@ namespace ECommerceBackend.Application.Abstractions.Services
 {
     public interface IOrderService
     {
+        Task CreateOrderAsync(CreateOrder createOrder);
+        Task<ListOrder> GetAllOrdersAsync(int page, int size);
     }
 }
