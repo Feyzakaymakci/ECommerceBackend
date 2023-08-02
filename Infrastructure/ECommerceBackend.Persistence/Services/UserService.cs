@@ -1,6 +1,7 @@
 ﻿using ECommerceBackend.Application.Abstractions.Services;
 using ECommerceBackend.Application.DTOs.User;
 using ECommerceBackend.Application.Exceptions;
+using ECommerceBackend.Application.Helpers;
 using ECommerceBackend.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -26,7 +27,7 @@ namespace ECommerceBackend.Persistence.Services
                 Id = Guid.NewGuid().ToString(),
                 UserName = model.Username,
                 Email = model.Email,
-                FullName = model.NameSurname,
+                NameSurname = model.NameSurname,
             }, model.Password);
 
             CreateUserResponse response = new() { Succeeded = result.Succeeded };
@@ -39,7 +40,8 @@ namespace ECommerceBackend.Persistence.Services
 
             return response;
         }
-        public async Task UpdateRefreshToken(string refreshToken, AppUser user, DateTime accessTokenDate, int addOnAccessTokenDate)
+
+        public async Task UpdateRefreshTokenAsync(string refreshToken, AppUser user, DateTime accessTokenDate, int addOnAccessTokenDate)
         {
             if (user != null)
             {
@@ -49,6 +51,20 @@ namespace ECommerceBackend.Persistence.Services
             }
             else
                 throw new NotFoundUserException();
+        }
+        public async Task UpdatePasswordAsync(string userId, string resetToken, string newPassword)
+        {
+            AppUser user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                resetToken = resetToken.UrlDecode();
+                IdentityResult result = await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
+                if (result.Succeeded)
+                    await _userManager.UpdateSecurityStampAsync(user);         //Dolaylı yoldan çürütme işlemini bu şekilde yapıyoruz.
+
+                else
+                    throw new PasswordChangeFailedException();
+            }
         }
     }
 }

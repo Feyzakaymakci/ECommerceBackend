@@ -7,22 +7,16 @@ using System.Threading.Tasks;
 
 namespace ECommerceBackend.Persistence
 {
-    public class Configuration
+
+    static class Configuration
     {
         static public string ConnectionString
         {
             get
             {
                 ConfigurationManager configurationManager = new();
-                try
-                {
-                    configurationManager.SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../../Presentation/ECommerceBackend.API"));
-                    configurationManager.AddJsonFile("appsettings.json");
-                }
-                catch
-                {
-                    configurationManager.AddJsonFile("appsettings.Production.json");
-                }
+                configurationManager.SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../../Presentation/ECommerceBackend.API"));
+                configurationManager.AddJsonFile("appsettings.json");
 
                 return configurationManager.GetConnectionString("PostgreSQL");
             }

@@ -6,6 +6,7 @@ using ECommerceBackend.Application.Exceptions;
 using ECommerceBackend.Domain.Entities.Identity;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -25,13 +26,15 @@ namespace ECommerceBackend.Persistence.Services
         readonly ITokenHandler _tokenHandler;
         readonly SignInManager<AppUser> _signInManager;
         readonly IUserService _userService;
+        readonly IMailService _mailService;
 
         public AuthService(IHttpClientFactory httpClientFactory,
             IConfiguration configuration,
             UserManager<AppUser> userManager,
             ITokenHandler tokenHandler,
             SignInManager<AppUser> signInManager,
-            IUserService userService)
+            IUserService userService, 
+            IMailService mailService)
         {
             _httpClient = httpClientFactory.CreateClient();
             _configuration = configuration;
@@ -39,6 +42,7 @@ namespace ECommerceBackend.Persistence.Services
             _tokenHandler = tokenHandler;
             _signInManager = signInManager;
             _userService = userService;
+            _mailService = mailService;
         }
         async Task<Token> CreateUserExternalAsync(AppUser user, string email, string name, UserLoginInfo info, int accessTokenLifeTime)
         {
@@ -53,7 +57,7 @@ namespace ECommerceBackend.Persistence.Services
                         Id = Guid.NewGuid().ToString(),
                         Email = email,
                         UserName = email,
-                        FullName = name
+                        NameSurname = name
                     };
                     var identityResult = await _userManager.CreateAsync(user);
                     result = identityResult.Succeeded;
@@ -65,7 +69,7 @@ namespace ECommerceBackend.Persistence.Services
                 await _userManager.AddLoginAsync(user, info); //AspNetUserLogins
 
                 Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime, user);
-                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
+                await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 15);
                 return token;
             }
             throw new Exception("Invalid external authentication.");
@@ -88,7 +92,7 @@ namespace ECommerceBackend.Persistence.Services
                 FacebookUserInfoResponse? userInfo = JsonSerializer.Deserialize<FacebookUserInfoResponse>(userInfoResponse);
 
                 var info = new UserLoginInfo("FACEBOOK", validation.Data.UserId, "FACEBOOK");
-                AppUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+                Domain.Entities.Identity.AppUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 
                 return await CreateUserExternalAsync(user, userInfo.Email, userInfo.Name, info, accessTokenLifeTime);
             }
@@ -104,24 +108,26 @@ namespace ECommerceBackend.Persistence.Services
             var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
 
             var info = new UserLoginInfo("GOOGLE", payload.Subject, "GOOGLE");
-            AppUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+            Domain.Entities.Identity.AppUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 
             return await CreateUserExternalAsync(user, payload.Email, payload.Name, info, accessTokenLifeTime);
         }
 
+
         public async Task<Token> LoginAsync(string usernameOrEmail, string password, int accessTokenLifeTime)
         {
-            AppUser user = await _userManager.FindByNameAsync(usernameOrEmail);
+            Domain.Entities.Identity.AppUser user = await _userManager.FindByNameAsync(usernameOrEmail);
             if (user == null)
                 user = await _userManager.FindByEmailAsync(usernameOrEmail);
 
             if (user == null)
                 throw new NotFoundUserException();
+
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
             if (result.Succeeded)
             {
                 Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime, user);
-                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
+                await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 15);
                 return token;
             }
             throw new AuthenticationErrorException();
@@ -133,11 +139,36 @@ namespace ECommerceBackend.Persistence.Services
             if (user != null && user?.RefreshTokenEndDate > DateTime.UtcNow)
             {
                 Token token = _tokenHandler.CreateAccessToken(15, user);
-                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 300);
+                await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 300);
                 return token;
             }
             else
                 throw new NotFoundUserException();
+        }
+
+        public async Task PasswordResetAsync(string email)
+        {
+            _userManager.FindByEmailAsync(email); //Öncelikle böyle bir email var mı check ediyoruz.
+            AppUser user = await _userManager.FindByEmailAsync(email);
+            if (user != null) //Eğer null değilse resetToken ı elde ediyoruz.
+            {
+                string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                byte[] tokenBytes = Encoding.UTF8.GetBytes(resetToken); //Oluşturduğumuz resetToken ı byte dizisine dönüştürdük.
+                resetToken = WebEncoders.Base64UrlEncode(tokenBytes); //URL de taşınabilir bir veri formatı haline getiriyoruz. Bu işlemi yapmazsak resetTokenımız kompleks değerler barındırabilir.Örn tırnak barındırabilr. Eğer böyle olursa bunu http protokolünden gönderemeyeceğiz.Bu yüzden resetTokenı http protokolünde kullanılabilir bir versiyona dönüştürerek şifreliyoruz.
+                await _mailService.SendPasswordResetMailAsync(email, user.Id, resetToken);
+            }
+
+        }
+        public async Task<bool> VerifyResetTokenAsync(string resetToken, string userId)
+        {
+            AppUser user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                byte[] tokenBytes = WebEncoders.Base64UrlDecode(resetToken); //resetToken şifrelediğimiz halde olacağından dolayı biz orjinali elde ediyoruz bu kod ile. resetToken ı çözümlüyoruz.
+                resetToken = Encoding.UTF8.GetString(tokenBytes);
+                return await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetToken", resetToken); //Hangi kullanıcıyı doğrulayacaksan önce onu ver, ardından tokenProvider ı ver.
+            }
+            return false;
         }
     }
 }
