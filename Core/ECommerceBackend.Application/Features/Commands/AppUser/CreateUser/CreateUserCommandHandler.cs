@@ -20,7 +20,7 @@ namespace ECommerceBackend.Application.Features.Commands.AppUser.CreateUser
             CreateUserResponse response = await _userService.CreateAsync(new()
             {
                 Email = request.Email,
-                NameSurname = request.FullName,
+                NameSurname = request.NameSurname,
                 Password = request.Password,
                 PasswordConfirm = request.ConfirmPassword,
                 Username = request.Username,

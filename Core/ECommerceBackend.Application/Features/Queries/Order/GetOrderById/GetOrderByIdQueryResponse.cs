@@ -21,6 +21,7 @@ namespace ECommerceBackend.Application.Features.Queries.Order.GetOrderById
         public string Id { get; set; }
 
         public string OrderCode { get; set; }
+        public bool Completed { get; set; }
 
     }
 

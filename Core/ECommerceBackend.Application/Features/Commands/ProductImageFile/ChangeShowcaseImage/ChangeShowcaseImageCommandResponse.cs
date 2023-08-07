@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECommerceBackend.Application.Features.Commands.ProductImageFile.ChangeShowcaseImage
 {
-    internal class ChangeShowcaseImageCommandResponse
+    public class ChangeShowcaseImageCommandResponse
     {
     }
 }

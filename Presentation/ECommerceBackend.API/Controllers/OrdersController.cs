@@ -1,4 +1,6 @@
 ﻿using ECommerceBackend.Application.DTOs.Order;
+using ECommerceBackend.Application.Features.Commands.Order;
+using ECommerceBackend.Application.Features.Commands.Order;
 using ECommerceBackend.Application.Features.Commands.Order.CreateOrder;
 using ECommerceBackend.Application.Features.Queries.Order;
 using ECommerceBackend.Application.Features.Queries.Order.GetAllOrders;
@@ -40,6 +42,13 @@ namespace ECommerceBackend.API.Controllers
         public async Task<ActionResult> CreateOrder(CreateOrderCommandRequest createOrderCommandRequest)
         {
             CreateOrderCommandResponse response = await _mediator.Send(createOrderCommandRequest);
+            return Ok(response);
+        }
+
+        [HttpGet("complete-order/{Id}")]
+        public async Task<ActionResult> CompleteOrder([FromRoute] CompleteOrderCommandRequest completeOrderCommandRequest)
+        {
+            CompleteOrderCommandResponse response = await _mediator.Send(completeOrderCommandRequest);
             return Ok(response);
         }
     }

@@ -4,7 +4,6 @@ using ECommerceBackend.Application.Features.Commands.Basket.UpdateQuantity;
 using ECommerceBackend.Application.Features.Queries.Basket.GetBasketItems;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceBackend.API.Controllers

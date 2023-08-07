@@ -5,14 +5,12 @@ using ECommerceBackend.Application.Features.Commands.AppUser.PasswordReset;
 using ECommerceBackend.Application.Features.Commands.AppUser.RefreshTokenLogin;
 using ECommerceBackend.Application.Features.Commands.AppUser.VerifyResetToken;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
     public class AuthController : ControllerBase
     {
         readonly IMediator _mediator;
@@ -61,5 +59,6 @@ namespace ECommerceBackend.API.Controllers
             VerifyResetTokenCommandResponse response = await _mediator.Send(verifyResetTokenCommandRequest);
             return Ok(response);
         }
+
     }
 }

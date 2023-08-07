@@ -39,6 +39,11 @@ namespace ECommerceBackend.Persistence.Contexts
                 .WithOne(o => o.Basket)
                 .HasForeignKey<Order>(b => b.Id);
 
+            builder.Entity<Order>()
+               .HasOne(o => o.CompletedOrder)
+               .WithOne(c => c.Order)
+               .HasForeignKey<CompletedOrder>(c => c.OrderId);
+
             base.OnModelCreating(builder);
         }
 
