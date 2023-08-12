@@ -1,8 +1,6 @@
 ﻿using ECommerceBackend.Application.DTOs.Order;
-using ECommerceBackend.Application.Features.Commands.Order;
-using ECommerceBackend.Application.Features.Commands.Order;
+using ECommerceBackend.Application.Features.Commands.Order.CompleteOrder;
 using ECommerceBackend.Application.Features.Commands.Order.CreateOrder;
-using ECommerceBackend.Application.Features.Queries.Order;
 using ECommerceBackend.Application.Features.Queries.Order.GetAllOrders;
 using ECommerceBackend.Application.Features.Queries.Order.GetOrderById;
 using MediatR;
@@ -23,21 +21,18 @@ namespace ECommerceBackend.API.Controllers
         {
             _mediator = mediator;
         }
-
         [HttpGet("{Id}")]
         public async Task<ActionResult> GetOrderById([FromRoute] GetOrderByIdQueryRequest getOrderByIdQueryRequest)
         {
             GetOrderByIdQueryResponse response = await _mediator.Send(getOrderByIdQueryRequest);
             return Ok(response);
         }
-
         [HttpGet]
         public async Task<ActionResult> GetAllOrders([FromQuery] GetAllOrdersQueryRequest getAllOrdersQueryRequest)
         {
             GetAllOrdersQueryResponse response = await _mediator.Send(getAllOrdersQueryRequest);
             return Ok(response);
         }
-
         [HttpPost]
         public async Task<ActionResult> CreateOrder(CreateOrderCommandRequest createOrderCommandRequest)
         {

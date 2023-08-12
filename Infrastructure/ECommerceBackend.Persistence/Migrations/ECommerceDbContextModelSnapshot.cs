@@ -95,7 +95,7 @@ namespace ECommerceBackend.Persistence.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("CompletedOrder");
+                    b.ToTable("CompletedOrders");
                 });
 
             modelBuilder.Entity("ECommerceBackend.Domain.Entities.Customer", b =>
@@ -266,9 +266,6 @@ namespace ECommerceBackend.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("CustomerId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -281,8 +278,6 @@ namespace ECommerceBackend.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
 
                     b.HasIndex("OrderCode")
                         .IsUnique();
@@ -452,6 +447,9 @@ namespace ECommerceBackend.Persistence.Migrations
                 {
                     b.HasBaseType("ECommerceBackend.Domain.Entities.File");
 
+                    b.Property<bool>("Showcase")
+                        .HasColumnType("boolean");
+
                     b.HasDiscriminator().HasValue("ProductImageFile");
                 });
 
@@ -498,10 +496,6 @@ namespace ECommerceBackend.Persistence.Migrations
 
             modelBuilder.Entity("ECommerceBackend.Domain.Entities.Order", b =>
                 {
-                    b.HasOne("ECommerceBackend.Domain.Entities.Customer", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("CustomerId");
-
                     b.HasOne("ECommerceBackend.Domain.Entities.Basket", "Basket")
                         .WithOne("Order")
                         .HasForeignKey("ECommerceBackend.Domain.Entities.Order", "Id")
@@ -583,11 +577,6 @@ namespace ECommerceBackend.Persistence.Migrations
 
                     b.Navigation("Order")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ECommerceBackend.Domain.Entities.Customer", b =>
-                {
-                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("ECommerceBackend.Domain.Entities.Identity.AppUser", b =>
